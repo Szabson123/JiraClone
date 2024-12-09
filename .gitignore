@@ -1,0 +1,11 @@
+venv/
+/static
+institution/signals.py
+
+*.pyc
+__pycache__/
+
+.vscode/
+.idea/
+
+*.log
