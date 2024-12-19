@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Project, UserProject
+from .models import Project, UserProject, Status
 
 
 class UserProjectSerializer(serializers.ModelSerializer):
@@ -23,6 +23,12 @@ class UserProjectSerializerName(serializers.ModelSerializer):
 
     def get_user_in_project(self, obj):
         return f'{obj.user.first_name} {obj.user.last_name}' 
+
+
+class StatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Status
+        fields = ['id', 'name', 'project']
     
     
 class ProjectSerializer(serializers.ModelSerializer):

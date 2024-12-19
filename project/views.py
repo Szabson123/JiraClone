@@ -3,7 +3,7 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.validators import ValidationError
 
-from .models import Project, UserProject
+from .models import Project, UserProject, Status
 from .serializers import ProjectSerializer, UserProjectSerializerName, UserProjectSerializer
 
 
@@ -13,7 +13,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         owner = self.request.user
-        serializer.save(owner=owner)
+        project = serializer.save(owner=owner)
+        Status.objects.create(project=project, name="To Do")
+        Status.objects.create(project=project, name="Done")
+        Status.objects.create(project=project, name="Pending")
         
 
 class UserInvitationViewSet(viewsets.ModelViewSet):
