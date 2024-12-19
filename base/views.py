@@ -13,6 +13,7 @@ class ToDoListViewSet(viewsets.ModelViewSet):
     
     @extend_schema(request={'application/json': {'type': 'object', 'properties': {'id': {'type': 'integer',}},}})
     @action(detail=False, methods=['POST'])
+    
     def item_set_true_false(self, request):
         item_id = self.request.data.get('id')
         item = get_object_or_404(ToDoItem, id=item_id)

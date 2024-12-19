@@ -18,5 +18,10 @@ class ToDoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ToDoList
         fields = ['id', 'name', 'description', 'to_do_item']
-        
+    
+    def validate(self, attrs):
+        if 'to_do_item' in self.initial_data:
+            raise serializers.ValidationError('Nie można dodać itemu podczas tworzenia listy')
+        return attrs
+
         

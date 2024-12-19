@@ -17,6 +17,11 @@ class UserSerializer(serializers.ModelSerializer):
         
         return user
     
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError('Password must have at least 8 characters')
+        else:
+            return value
 
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()
