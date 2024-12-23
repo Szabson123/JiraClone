@@ -21,7 +21,7 @@ class Status(models.Model):
 
 
 class Task(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
     name = models.CharField(max_length=255)
     description = models.TextField()
     status = models.ForeignKey(Status, on_delete=models.DO_NOTHING, default=None)
