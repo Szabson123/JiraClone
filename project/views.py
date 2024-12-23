@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.validators import ValidationError
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Project, UserProject, Status, Task
-from .serializers import ProjectSerializer, UserProjectSerializerName, UserProjectSerializer, TaskSerializer, StatusSerializer
+from .models import Project, UserProject, Status, Task, UserTask
+from .serializers import ProjectSerializer, UserProjectSerializerName, UserProjectSerializer, TaskSerializer, StatusSerializer, UserTaskSerializer
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -58,7 +58,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 
 class StatusViewSet(viewsets.ModelViewSet):
     queryset = Status.objects.none()
-    permission_classes = StatusSerializer
+    serializer_class = StatusSerializer
     
     def perform_create(self, serializer):
         project_id = self.kwargs.get('project_id')
@@ -69,3 +69,20 @@ class StatusViewSet(viewsets.ModelViewSet):
         project_id = self.kwargs.get('project_id')
         status = Status.objects.filter(project_id=project_id)
         return status
+    
+
+class UserTaskViewSet(viewsets.ModelViewSet):
+    serializer_class = UserTaskSerializer
+    queryset = UserTask.objects.all()
+    
+    def perform_create(self, serializer):
+        task_id = self.kwargs.get('task_id')
+        task = get_object_or_404(Task, id=task_id)
+        save_user = serializer.validated_data.get('user')
+        
+        if task.users.filter(id=save_user.id).exists():
+            raise ValidationError({"error": "This user already exists in this task"})
+
+        serializer.save(task=task)
+        return super().perform_create(serializer)
+    

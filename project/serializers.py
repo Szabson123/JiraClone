@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Project, UserProject, Status, Task
+from .models import Project, UserProject, Status, Task, UserTask
 
 
 class UserProjectSerializer(serializers.ModelSerializer):
@@ -31,13 +31,21 @@ class StatusSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'project']
 
 
+class UserTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserTask
+        fields = ['user']
+
+
 class TaskSerializer(serializers.ModelSerializer):
     project = serializers.SerializerMethodField()
     status_id = serializers.PrimaryKeyRelatedField(source='status', queryset=Status.objects.all(), write_only=True)
     status_name = serializers.CharField(source='status.name', read_only=True)
+    assign_users = UserTaskSerializer(source='user_tasks', many=True)
+    
     class Meta:
         model = Task
-        fields = ['id', 'project', 'name', 'description', 'status_name', 'status_id']
+        fields = ['id', 'project', 'name', 'description', 'status_name', 'status_id', 'assign_users']
         
     def get_project(self, obj):
         return obj.project.name
